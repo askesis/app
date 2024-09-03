@@ -1,14 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import * as fabric from 'fabric'; // v6
+import CanvasContext from './CanvasContext';
 
 export const FabricJSCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  const { updateCanvasContext } = useContext(CanvasContext);
 
   useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
-    
+
     const canvas = new fabric.Canvas(canvasRef.current);
 
     const rect = new fabric.Rect({
@@ -20,10 +23,13 @@ export const FabricJSCanvas = () => {
     });
 
     canvas.add(rect)
+    updateCanvasContext(canvas);
+
     return () => {
+      updateCanvasContext(null);
       canvas.dispose();
     }
   }, []);
 
-  return <canvas id="canvas" width="300" height="300" ref={canvasRef} />;
+  return <canvas id="canvas" width="300" height="300" ref={canvasRef} />
 };
