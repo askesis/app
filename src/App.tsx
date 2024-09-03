@@ -1,9 +1,9 @@
-import { ChangeEvent, MouseEventHandler, Ref, useContext, useState } from "react";
+import { ChangeEvent, MouseEventHandler, useState } from "react";
 import "./App.css";
 
 import { FabricJSCanvas } from "./FabricCanvas";
 import * as fabric from 'fabric';
-import CanvasContext, { CanvasContextProvider, useCanvasContext } from "./CanvasContext";
+import { CanvasContextProvider, useCanvasContext } from "./CanvasContext";
 
 function App() {
 
@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="App">
       <CanvasContextProvider>
-        <div>
+        <div className="container">
           <FabricJSCanvas />
 
           <Sidebar />
@@ -67,11 +67,25 @@ function Sidebar() {
     }
   }
 
-  return (
-    <div>
-      <div>Choose from</div>
+  const handleClick = () => {
+    const obj = canvas?.getActiveObject();
 
-      {files.map(objURL => <img key={objURL} src={objURL} alt="Image" onClick={handleClickImage(objURL)} />)}
+    if (obj) {
+      canvas?.remove(obj)
+    }
+  }
+
+  return (
+    <div id="sidebar" className="sidebar container">
+      <button type="button" onClick={handleClick}>Remove selected object</button>
+
+      <h3>Images</h3>
+     
+      {files.length === 0 ? '' : <div>Click on image to add on canvas</div>}
+
+      <div className="sidebar-images">
+        {files.map(objURL => <img key={objURL} src={objURL} alt="Image" onClick={handleClickImage(objURL)} />)}
+      </div>
 
       <input onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg" />
 

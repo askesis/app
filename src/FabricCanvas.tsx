@@ -4,7 +4,7 @@ import CanvasContext from './CanvasContext';
 
 export const FabricJSCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   const { updateCanvasContext } = useContext(CanvasContext);
 
   useEffect(() => {
@@ -31,5 +31,5 @@ export const FabricJSCanvas = () => {
     }
   }, []);
 
-  return <canvas id="canvas" width="300" height="300" ref={canvasRef} />
+  return <canvas id="canvas" width="600" height="600" ref={canvasRef} />
 };
