@@ -14,14 +14,19 @@ function SaveCanvasButton() {
 
   }
 
+  const handleClickResetZoom = () => {
+    canvas?.setViewportTransform([1, 0, 0, 1, 0, 0]);
+  }
+
   return (
-    <button type="button" onClick={handleClick}>Get Canvas SVG</button>
+    <div>
+
+      <button type="button" onClick={handleClick}>Get Canvas SVG</button>
+      <button type="button" onClick={handleClickResetZoom}>Reset Zoom</button>
+    </div>
   )
 }
 
-// const historyUndo: string[] = [];
-// const historyRedo = [];
-const history: string[] = [];
 
 function History() {
   const { canvas } = useCanvasContext();
