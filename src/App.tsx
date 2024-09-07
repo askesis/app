@@ -1,6 +1,6 @@
 import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 import * as fabric from 'fabric';
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 import { FabricJSCanvas } from "./FabricCanvas";
 import { CanvasContextProvider, useCanvasContext } from "./CanvasContext";
@@ -24,7 +24,6 @@ function SaveCanvasButton() {
     </>
   )
 }
-
 
 function History() {
   const { canvas } = useCanvasContext();
@@ -70,10 +69,12 @@ function History() {
 
   }
 
-  return <div>
-    <Button variant="outline-primary" className="me-2" onClick={handleClickUndo} disabled={historyUndo.length <= 1}>Undo</Button>
-    <Button variant="outline-primary" onClick={handleClickRedo} disabled={historyRedo.length === 0}>Redo</Button>
-  </div>
+  return (
+    <div>
+      <Button variant="outline-primary" className="me-2" onClick={handleClickUndo} disabled={historyUndo.length <= 1}>Undo</Button>
+      <Button variant="outline-primary" onClick={handleClickRedo} disabled={historyRedo.length === 0}>Redo</Button>
+    </div>
+  )
 }
 
 function App() {
@@ -81,7 +82,7 @@ function App() {
     <Container fluid className="pt-3" >
       <CanvasContextProvider>
         <Row>
-          <Col>
+          <Col className="mb-4">
             <CanvasControlsTop />
             <FabricJSCanvas />
             <CanvasControlsBottom />
@@ -109,6 +110,7 @@ function CanvasControlsTop() {
     </div>
   )
 }
+
 function CanvasControlsBottom() {
   const { canvas } = useCanvasContext();
 
@@ -119,6 +121,7 @@ function CanvasControlsBottom() {
       canvas?.remove(obj)
     }
   }
+
   return (
     <div className="mt-2 d-flex justify-content-between canvas-control-bottom">
       <Button 
@@ -126,7 +129,9 @@ function CanvasControlsBottom() {
         type="button" 
         onClick={handleClick}
         className="me-2"
-        >Remove selected object</Button>
+      >
+        Remove selected object
+      </Button>
       <SaveCanvasButton />
     </div>
   )
@@ -162,9 +167,9 @@ function Sidebar() {
   const { canvas } = useCanvasContext();
 
   const handleChangeInputFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0];
-
+    const file = e.target.files?.[0];
+    
+    if (file) {
       encodeImageFileAsURL(file, res => setFiles([...files, res]))
     }
   };
@@ -172,16 +177,14 @@ function Sidebar() {
   const handleClickImage = (objURL: string): MouseEventHandler<HTMLImageElement> => {
     return async () => {
       const img = await fabric.FabricImage.fromURL(objURL);
+
       img.scaleToHeight(150)
       canvas?.add(img);
     }
   }
 
-
   return (
     <div id="sidebar" className="sidebar">
-     
-
       <h3>Images</h3>
 
       {files.length === 0 ? '' : <div>Click on image to add on canvas</div>}
@@ -190,7 +193,11 @@ function Sidebar() {
         {files.map(objURL => <img key={objURL} src={objURL} alt="Image" onClick={handleClickImage(objURL)} />)}
       </div>
 
-      <input onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg" />
+      <div>
+        <Button as="label" htmlFor="add-image">Choose file (JPG, PNG, SVG) </Button>
+
+        <input id="add-image" onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg" />
+      </div>
     </div>
   )
 }
