@@ -1,29 +1,27 @@
 import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 import * as fabric from 'fabric';
-
-import "./App.css";
+import { Button, Col, Container, Row } from "react-bootstrap";
 
 import { FabricJSCanvas } from "./FabricCanvas";
 import { CanvasContextProvider, useCanvasContext } from "./CanvasContext";
+import SVGModal from "./SVGModal";
+import encodeImageFileAsURL from "./utils/encodeImageFileAsURL";
 
 function SaveCanvasButton() {
-  const { canvas } = useCanvasContext();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleClick = () => {
-    console.log(canvas?.toSVG());
-
+  const openModal = () => {
+    setIsOpen(true);
   }
-
-  const handleClickResetZoom = () => {
-    canvas?.setViewportTransform([1, 0, 0, 1, 0, 0]);
+  const closeModal = () => {
+    setIsOpen(false);
   }
 
   return (
-    <div>
-
-      <button type="button" onClick={handleClick}>Get Canvas SVG</button>
-      <button type="button" onClick={handleClickResetZoom}>Reset Zoom</button>
-    </div>
+    <>
+      <Button variant="primary" type="button" className="btn btn-primary" onClick={openModal}>Get Canvas SVG</Button>
+      <SVGModal isOpen={isOpen} handleClose={closeModal} />
+    </>
   )
 }
 
@@ -41,7 +39,7 @@ function History() {
   }, [canvas]);
 
   useEffect(() => {
-    canvas?.on('object:modified', (options) => {
+    canvas?.on('object:modified', () => {
       console.log('object:modified');
 
       const json = JSON.stringify(canvas.toDatalessJSON(['selectable', 'editable']));
@@ -73,27 +71,65 @@ function History() {
   }
 
   return <div>
-    <button onClick={handleClickUndo} disabled={historyUndo.length === 1}>Undo</button>
-    <button onClick={handleClickRedo} disabled={historyRedo.length === 0}>Redo</button>
+    <Button variant="outline-primary" className="me-2" onClick={handleClickUndo} disabled={historyUndo.length <= 1}>Undo</Button>
+    <Button variant="outline-primary" onClick={handleClickRedo} disabled={historyRedo.length === 0}>Redo</Button>
   </div>
 }
 
 function App() {
   return (
-    <div className="App">
+    <Container fluid className="pt-3" >
       <CanvasContextProvider>
-        <div className="container">
-          <div>
+        <Row>
+          <Col>
+            <CanvasControlsTop />
             <FabricJSCanvas />
-            <SaveCanvasButton />
-            <History />
-          </div>
-
-          <Sidebar />
-        </div>
+            <CanvasControlsBottom />
+          </Col>
+          <Col>
+            <Sidebar />
+          </Col>
+        </Row>
       </CanvasContextProvider>
-    </div>
+    </Container>
   );
+}
+
+function CanvasControlsTop() {
+  const { canvas } = useCanvasContext();
+
+  const handleClickResetZoom = () => {
+    canvas?.setViewportTransform([1, 0, 0, 1, 0, 0]);
+  }
+
+  return (
+    <div className="canvas-controls-top d-flex justify-content-between mb-2 ">
+      <History />
+      <Button variant="outline-primary" type="button" onClick={handleClickResetZoom}>Reset Zoom</Button>
+    </div>
+  )
+}
+function CanvasControlsBottom() {
+  const { canvas } = useCanvasContext();
+
+  const handleClick = () => {
+    const obj = canvas?.getActiveObject();
+
+    if (obj) {
+      canvas?.remove(obj)
+    }
+  }
+  return (
+    <div className="mt-2 d-flex justify-content-between canvas-control-bottom">
+      <Button 
+        variant="outline-danger" 
+        type="button" 
+        onClick={handleClick}
+        className="me-2"
+        >Remove selected object</Button>
+      <SaveCanvasButton />
+    </div>
+  )
 }
 
 function LoadImageButton() {
@@ -121,18 +157,6 @@ function LoadImageButton() {
   )
 }
 
-function encodeImageFileAsURL(file: File, callback: (res: string) => void) {
-  const reader = new FileReader();
-
-  reader.onloadend = function () {
-    if (typeof reader.result === 'string') {
-      callback(reader.result.toString());
-    }
-  }
-
-  reader.readAsDataURL(file);
-}
-
 function Sidebar() {
   const [files, setFiles] = useState<(string)[]>([]);
   const { canvas } = useCanvasContext();
@@ -153,17 +177,10 @@ function Sidebar() {
     }
   }
 
-  const handleClick = () => {
-    const obj = canvas?.getActiveObject();
-
-    if (obj) {
-      canvas?.remove(obj)
-    }
-  }
 
   return (
-    <div id="sidebar" className="sidebar container">
-      <button type="button" onClick={handleClick}>Remove selected object</button>
+    <div id="sidebar" className="sidebar">
+     
 
       <h3>Images</h3>
 
@@ -174,7 +191,6 @@ function Sidebar() {
       </div>
 
       <input onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg" />
-
     </div>
   )
 }
