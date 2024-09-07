@@ -196,7 +196,7 @@ function Sidebar() {
       <div>
         <Button as="label" htmlFor="add-image">Choose file (JPG, PNG, SVG) </Button>
 
-        <input id="add-image" onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg" />
+        <input id="add-image" onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg, .svg" />
       </div>
     </div>
   )
