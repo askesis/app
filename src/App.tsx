@@ -34,7 +34,7 @@ function History() {
       const json = JSON.stringify(canvas?.toDatalessJSON(['selectable', 'editable']))
       setHistoryUndo([json]);
     }
-  }, [canvas]);
+  }, [canvas, historyUndo.length]);
 
   useEffect(() => {
     canvas?.on('object:modified', () => {
@@ -226,7 +226,7 @@ function SidebarImageView({ file }: { file: File }) {
 
   return (
     <div className="sidebar-item">
-      <img id={elementId} src={URL.createObjectURL(file)} onClick={handleClickImage} />
+      <img id={elementId} src={URL.createObjectURL(file)} onClick={handleClickImage} alt='' />
     </div>
   )
 }
