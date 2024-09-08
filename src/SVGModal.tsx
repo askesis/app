@@ -1,5 +1,6 @@
-import React, { FC, useEffect, useRef } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
+
 import { useCanvasContext } from './CanvasContext'
 
 interface Props {
