@@ -21,7 +21,7 @@ function Sidebar() {
       {files.length === 0 ? '' : <b>Click on a file to add on canvas</b>}
 
       <div className="sidebar-items">
-        {files.map(file => <SidebarItem file={file} />)}
+        {files.map(file => <SidebarItem key={file.name} file={file} />)}
       </div>
 
       <div>

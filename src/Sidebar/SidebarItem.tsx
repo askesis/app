@@ -7,10 +7,10 @@ interface Props {
 
 function SidebarItem({ file }: Props) {
   if (file.type === 'text/plain') {
-    return <SidebarTextView key={file.name} file={file} />
+    return <SidebarTextView file={file} />
   }
 
-  return <SidebarImageView key={file.name} file={file} />
+  return <SidebarImageView file={file} />
 }
 
 export default SidebarItem

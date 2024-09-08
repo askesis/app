@@ -23,7 +23,6 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
     opt.e.stopPropagation();
   });
 
-
   // panning 
   canvas?.on('mouse:down', function (opt) {
     const evt = opt.e;
@@ -35,6 +34,7 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
       lastPosY = opt.scenePoint.y;
     }
   });
+
   canvas?.on('mouse:move', function (opt) {
     if (isDragging) {
       const vpt = canvas.viewportTransform;
@@ -46,6 +46,7 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
 
     }
   });
+
   canvas?.on('mouse:up', function () {
     // on mouse up we want to recalculate new interaction
     // for all objects, so we call setViewportTransform 
@@ -53,6 +54,36 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
     isDragging = false
     canvas.selection = true;
   });
+}
+
+fabric.FabricImage.prototype.getSrc = function (filtered: boolean) {
+  const element = filtered ? this._element : this._originalElement;
+  if (element) {
+    if ((element as HTMLCanvasElement).toDataURL) {
+      return (element as HTMLCanvasElement).toDataURL();
+    }
+
+    if (this.srcFromAttribute) {
+      return element.getAttribute('src') || '';
+    } else {
+      return toDataURL((element as HTMLImageElement));
+    }
+  } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    return this.src || '';
+  }
+}
+
+function toDataURL(src: HTMLImageElement) {
+  const canvas = document.createElement('CANVAS') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = src.naturalWidth;
+  canvas.height = src.naturalHeight;
+
+  ctx?.drawImage(src, 0, 0);
+  return canvas.toDataURL('image/jpeg')
 }
 
 export const FabricJSCanvas = () => {
