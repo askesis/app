@@ -1,10 +1,11 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as fabric from 'fabric';
 import { Button, Col, Container, Row } from "react-bootstrap";
 
 import { FabricJSCanvas } from "./FabricCanvas";
 import { CanvasContextProvider, useCanvasContext } from "./CanvasContext";
 import SVGModal from "./SVGModal";
+import Sidebar from "./Sidebar/Sidebar";
 
 function SaveCanvasButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -136,43 +137,6 @@ function CanvasControlsBottom() {
   )
 }
 
-function Sidebar() {
-  const [files, setFiles] = useState<File[]>([]);
-
-  const handleChangeInputFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (file) {
-      setFiles([...files, file])
-    }
-  };
-
-  return (
-    <div id="sidebar" className="sidebar">
-      <h3>Images</h3>
-
-      {files.length === 0 ? '' : <b>Click on a file to add on canvas</b>}
-
-      <div className="sidebar-items">
-        {files.map(file => <SidebarItem file={file} />)}
-      </div>
-
-      <div>
-        <Button as="label" htmlFor="add-image">Choose file (JPG, PNG, SVG, TXT)</Button>
-
-        <input id="add-image" onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg, .svg, text/plain" />
-      </div>
-    </div>
-  )
-}
-
-function SidebarItem({ file }: { file: File }) {
-  if (file.type === 'text/plain') {
-    return <SidebarTextView key={file.name} file={file} />
-  }
-
-  return <SidebarImageView key={file.name} file={file} />
-}
 
 fabric.FabricImage.prototype.getSrc = function (filtered: boolean) {
   const element = filtered ? this._element : this._originalElement;
@@ -202,69 +166,6 @@ function toDataURL(src: HTMLImageElement) {
 
   ctx?.drawImage(src, 0, 0);
   return canvas.toDataURL('image/jpeg')
-}
-
-function SidebarImageView({ file }: { file: File }) {
-  const { canvas } = useCanvasContext();
-
-  const elementId = file.name.replace('.', '');
-
-  const handleClickImage = () => {
-    const img = new Image();
-
-    img.onerror = (e) => console.log(e)
-
-    img.onload = () => {
-      const fabricImg = new fabric.FabricImage(img, { width: img.naturalWidth, height: img.naturalHeight });
-
-      fabricImg.scaleToHeight(150);
-      canvas?.add(fabricImg);
-    }
-
-    img.src = URL.createObjectURL(file)
-  }
-
-  return (
-    <div className="sidebar-item">
-      <img id={elementId} src={URL.createObjectURL(file)} onClick={handleClickImage} alt='' />
-    </div>
-  )
-}
-
-function SidebarTextView({ file }: { file: File }) {
-  const [text, setText] = useState<string>('');
-  const { canvas } = useCanvasContext();
-
-  useEffect(() => {
-    file.text().then(res => setText(res))
-  }, [file])
-
-  const handleTextFileClick = () => {
-    const textObj = new fabric.FabricText(text);
-
-    if (textObj.height > 600 || textObj.width > 600) {
-      if (textObj.height > textObj.width) {
-        textObj.scaleToHeight(500);
-      } else {
-        textObj.scaleToWidth(500);
-      }
-    }
-
-    canvas?.add(textObj)
-  }
-
-  return (
-    <div className="sidebar-item" onClick={handleTextFileClick}>
-      <div className="text-view-card">
-        <div className="text-view-card-name">
-          {file.name}
-        </div>
-        <div className="text-view-card-content">
-          {text.slice(0, 100)}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default App;
