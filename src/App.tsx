@@ -240,9 +240,17 @@ function SidebarTextView({ file }: { file: File }) {
   }, [file])
 
   const handleTextFileClick = () => {
-    const fabricFile = new fabric.FabricText(text);
+    const textObj = new fabric.FabricText(text);
 
-    canvas?.add(fabricFile)
+    if (textObj.height > 600 || textObj.width > 600) {
+      if (textObj.height > textObj.width) {
+        textObj.scaleToHeight(500);
+      } else {
+        textObj.scaleToWidth(500);
+      }
+    }
+
+    canvas?.add(textObj)
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import * as fabric from 'fabric'; // v6
 
 import CanvasContext from './CanvasContext';
@@ -49,7 +49,6 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
   canvas?.on('mouse:up', function() {
     // on mouse up we want to recalculate new interaction
     // for all objects, so we call setViewportTransform 
-    console.log(canvas.viewportTransform)
     canvas.setViewportTransform(canvas.viewportTransform);
     isDragging = false
     canvas.selection = true;
