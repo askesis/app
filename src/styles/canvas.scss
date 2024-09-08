@@ -1,0 +1,24 @@
+
+#canvas {
+  border: 1px dotted black;
+  border-radius: $border-radius;
+}
+
+.svg-modal {
+  height: 70%;
+  min-height: unset !important;
+
+  textarea {
+    width: 100%;
+    height: 400px;
+    resize: none;
+  }
+}
+
+.canvas-controls-top {
+  max-width: 600px;
+}
+
+.canvas-control-bottom {
+  max-width: 600px;
+}

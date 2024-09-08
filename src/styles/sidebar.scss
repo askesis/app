@@ -1,0 +1,54 @@
+
+#sidebar {
+  input[type=file] {
+    opacity: 0;
+  }
+}
+
+.sidebar-items {
+  display: flex;
+  flex-direction: column;
+
+  align-self: center;
+
+  img {}
+
+  .sidebar-item {
+    margin: 10px 0;
+    padding: 20px;
+    border: 1px solid transparent;
+    max-width: 200px;
+    border-radius: 4px;
+    cursor: pointer;
+
+
+    img {
+      width: 100%
+    }
+    
+    &:hover {
+      border: 1px solid gray;
+    }
+  }
+}
+
+.text-view-card {
+  border: 1px solid rgb(208, 208, 208);
+  border-radius: $border-radius;
+
+  .text-view-card-name {
+    padding: 10px 10px 0 10px;
+    font-weight: 600;
+    border-bottom: 1px solid  rgb(208, 208, 208);
+
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .text-view-card-content {
+    padding: 10px;
+    word-break: break-all;
+  }
+}
+
