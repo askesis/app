@@ -112,7 +112,8 @@ export const FabricJSCanvas = () => {
       updateCanvasContext(null);
       canvas.dispose();
     }
-  }, [canvasRef]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <canvas id="canvas" width="600" height="600" ref={canvasRef} />
 };

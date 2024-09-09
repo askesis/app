@@ -1,6 +1,6 @@
-import * as fabric from 'fabric';
-
 import { ReactElement, createContext, useContext, useState } from "react";
+
+import * as fabric from 'fabric';
 
 type Canvas = fabric.Canvas | null;
 
@@ -8,7 +8,10 @@ const CanvasContext = createContext<{
     canvas: Canvas,
     updateCanvasContext: (canvas: Canvas) => void 
 }>
-  ({ canvas: null, updateCanvasContext: () => void 0 });
+  ({ 
+    canvas: null, 
+    updateCanvasContext: () => void 0 
+  });
 
 
 const CanvasContextProvider = ({ children }: { children: ReactElement }) => {
