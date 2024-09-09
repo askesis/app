@@ -56,7 +56,7 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
   });
 }
 
-fabric.FabricImage.prototype.getSrc = function (filtered: boolean) {
+fabric.FabricImage.prototype.getSrc = function (this: fabric.FabricImage, filtered: boolean) {
   const element = filtered ? this._element : this._originalElement;
   if (element) {
     if ((element as HTMLCanvasElement).toDataURL) {
@@ -69,8 +69,6 @@ fabric.FabricImage.prototype.getSrc = function (filtered: boolean) {
       return toDataURL((element as HTMLImageElement));
     }
   } else {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     return this.src || '';
   }
 }
@@ -114,7 +112,6 @@ export const FabricJSCanvas = () => {
       updateCanvasContext(null);
       canvas.dispose();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvasRef]);
 
   return <canvas id="canvas" width="600" height="600" ref={canvasRef} />

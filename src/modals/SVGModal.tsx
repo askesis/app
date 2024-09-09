@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 
-import { useCanvasContext } from './CanvasContext'
+import { useCanvasContext } from '../CanvasContext'
 
 interface Props {
   isOpen: boolean

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "react-bootstrap";
 
-import SVGModal from "../SVGModal";
+import SVGModal from "../modals/SVGModal";
 
 function SaveCanvasButton() {
   const [isOpen, setIsOpen] = useState(false);
