@@ -7,11 +7,13 @@ function CanvasControlsBottom() {
   const { canvas } = useCanvasContext();
 
   const handleClick = () => {
-    const obj = canvas?.getActiveObject();
-
-    if (obj) {
-      canvas?.remove(obj)
-    }
+    const objects = canvas?.getActiveObjects();
+    
+    objects?.forEach(obj => {
+      canvas?.remove(obj);
+    })
+    
+    canvas?.discardActiveObject()
   }
 
   return (
@@ -29,5 +31,6 @@ function CanvasControlsBottom() {
     </div>
   )
 }
+
 
 export default CanvasControlsBottom;
