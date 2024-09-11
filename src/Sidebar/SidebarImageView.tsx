@@ -23,6 +23,8 @@ function SidebarImageView({ file }: Props) {
       canvas?.add(fabricImg);
     }
 
+    img.dataset.fileType = file.type;
+
     img.src = URL.createObjectURL(file)
   }
 

@@ -67,7 +67,7 @@ fabric.FabricImage.prototype.getSrc = function (this: fabric.FabricImage, filter
       return element.getAttribute('src') || '';
     } else {
       if (filtered) {
-        return toDataURL((element as HTMLImageElement));
+        return toDataURL(element as HTMLImageElement)
       } else {
         return (element as HTMLImageElement).src
       }
@@ -78,6 +78,7 @@ fabric.FabricImage.prototype.getSrc = function (this: fabric.FabricImage, filter
 }
 
 function toDataURL(src: HTMLImageElement) {
+  console.log(src)
   const canvas = document.createElement('CANVAS') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d');
 
@@ -85,7 +86,8 @@ function toDataURL(src: HTMLImageElement) {
   canvas.height = src.naturalHeight;
 
   ctx?.drawImage(src, 0, 0);
-  return canvas.toDataURL()
+  // src.dataset.fileType
+  return canvas.toDataURL(src.dataset.fileType)
 }
 
 function FabricCanvas() {
