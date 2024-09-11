@@ -86,7 +86,7 @@ function toDataURL(src: HTMLImageElement) {
   canvas.height = src.naturalHeight;
 
   ctx?.drawImage(src, 0, 0);
-  // src.dataset.fileType
+
   return canvas.toDataURL(src.dataset.fileType)
 }
 
