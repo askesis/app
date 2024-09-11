@@ -20,15 +20,21 @@ function Sidebar() {
 
       {files.length === 0 ? '' : <b>Click on a file to add on canvas</b>}
 
-      <div className="sidebar-items">
-        {files.map(file => <SidebarItem key={file.name} file={file} />)}
-      </div>
+      <SidebarItems files={files} />
 
       <div>
         <Button as="label" htmlFor="add-image">Choose file (JPG, PNG, SVG, TXT)</Button>
 
         <input id="add-image" onChange={handleChangeInputFile} type="file" accept="image/png, image/jpeg, image/svg+xml, text/plain" />
       </div>
+    </div>
+  )
+}
+
+function SidebarItems({ files }: { files: File[] }) {
+  return (
+    <div className="sidebar-items">
+      {files.map(file => <SidebarItem key={file.name} file={file} />)}
     </div>
   )
 }

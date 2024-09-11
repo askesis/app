@@ -1,58 +1,26 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Button } from "react-bootstrap";
 
 import { useCanvasContext } from "../CanvasContext";
 
-function History() {
-  const { canvas } = useCanvasContext();
-  const [historyUndo, setHistoryUndo] = useState<string[]>([]);
-  const [historyRedo, setHistoryRedo] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (canvas && historyUndo.length === 0) {
-      const json = JSON.stringify(canvas?.toDatalessJSON(['selectable', 'editable']))
-      setHistoryUndo([json]);
-    }
-  }, [canvas, historyUndo.length]);
-
-  useEffect(() => {
-    canvas?.on('object:modified', () => {
-      console.log('object:modified');
-
-      const json = JSON.stringify(canvas.toDatalessJSON(['selectable', 'editable']));
-
-      setHistoryUndo(prev => [...prev, json]);
-      setHistoryRedo([])
-    })
-  }, [canvas])
+function HistoryComp() {
+  const { history } = useCanvasContext();
+  const { canRedo, canUndo } = useSyncExternalStore(history?.subscribe, history?.getSnapshot);
 
   const handleClickUndo = () => {
-    const prevHistory = historyUndo.at(-2) as string;
-
-    canvas?.loadFromJSON(prevHistory).then(function (canvas_) {
-      canvas_.renderAll();
-      setHistoryRedo(prev => [...prev, historyUndo.at(-1) as string]);
-      setHistoryUndo(prev => prev.slice(0, historyUndo.length - 1));
-    });
+    history?.undo();
   }
 
   const handleClickRedo = () => {
-    const nextSnapshot = historyRedo.at(-1) as string;
-
-    canvas?.loadFromJSON(nextSnapshot).then(function (canvas_) {
-      canvas_.renderAll();
-      setHistoryRedo(prev => prev.slice(0, historyRedo.length - 1));
-      setHistoryUndo(prev => [...prev, nextSnapshot]);
-    });
-
+    history?.redo();
   }
 
   return (
     <div>
-      <Button variant="outline-primary" onClick={handleClickUndo} disabled={historyUndo.length <= 1} className="me-2">Undo</Button>
-      <Button variant="outline-primary" onClick={handleClickRedo} disabled={historyRedo.length === 0}>Redo</Button>
+      <Button variant="outline-primary" onClick={handleClickUndo} disabled={canUndo === false} className="me-2">Undo</Button>
+      <Button variant="outline-primary" onClick={handleClickRedo} disabled={canRedo === false}>Redo</Button>
     </div>
   )
 }
 
-export default History;
+export default HistoryComp;

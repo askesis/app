@@ -3,7 +3,8 @@ import * as fabric from 'fabric'; // v6
 
 import CanvasContext from './CanvasContext';
 
-const addCanvasZoom = (canvas: fabric.Canvas) => {
+// according to http://fabricjs.com/fabric-intro-part-5#pan_zoom
+function addCanvasZoom(canvas: fabric.Canvas) {
   let isDragging = false;
   let lastPosX: number, lastPosY: number;
 
@@ -48,8 +49,6 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
   });
 
   canvas?.on('mouse:up', function () {
-    // on mouse up we want to recalculate new interaction
-    // for all objects, so we call setViewportTransform 
     canvas.setViewportTransform(canvas.viewportTransform);
     isDragging = false
     canvas.selection = true;
@@ -58,6 +57,7 @@ const addCanvasZoom = (canvas: fabric.Canvas) => {
 
 fabric.FabricImage.prototype.getSrc = function (this: fabric.FabricImage, filtered: boolean) {
   const element = filtered ? this._element : this._originalElement;
+
   if (element) {
     if ((element as HTMLCanvasElement).toDataURL) {
       return (element as HTMLCanvasElement).toDataURL();
@@ -66,7 +66,11 @@ fabric.FabricImage.prototype.getSrc = function (this: fabric.FabricImage, filter
     if (this.srcFromAttribute) {
       return element.getAttribute('src') || '';
     } else {
-      return toDataURL((element as HTMLImageElement));
+      if (filtered) {
+        return toDataURL((element as HTMLImageElement));
+      } else {
+        return (element as HTMLImageElement).src
+      }
     }
   } else {
     return this.src || '';
@@ -81,13 +85,13 @@ function toDataURL(src: HTMLImageElement) {
   canvas.height = src.naturalHeight;
 
   ctx?.drawImage(src, 0, 0);
-  return canvas.toDataURL('image/jpeg')
+  return canvas.toDataURL()
 }
 
-export const FabricJSCanvas = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+function FabricCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { updateCanvasContext } = useContext(CanvasContext);
+  const { updateCanvasContext, history } = useContext(CanvasContext);
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -110,6 +114,7 @@ export const FabricJSCanvas = () => {
 
     return () => {
       updateCanvasContext(null);
+      history?.dispose();
       canvas.dispose();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,3 +122,5 @@ export const FabricJSCanvas = () => {
 
   return <canvas id="canvas" width="600" height="600" ref={canvasRef} />
 };
+
+export default FabricCanvas

@@ -1,11 +1,12 @@
 import { Col, Container, Row } from "react-bootstrap";
 
-import { FabricJSCanvas } from "./FabricCanvas";
-import { CanvasContextProvider } from "./CanvasContext";
+import FabricCanvas from "./FabricCanvas";
 import Sidebar from "./Sidebar/Sidebar";
 
 import CanvasControlsTop from "./CanvasControls/CanvasControlsTop";
 import CanvasControlsBottom from "./CanvasControls/CanvasControlsBottom";
+
+import { CanvasContextProvider } from "./CanvasContext";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <Row>
           <Col className="mb-4">
             <CanvasControlsTop />
-            <FabricJSCanvas />
+            <FabricCanvas />
             <CanvasControlsBottom />
           </Col>
           <Col>
